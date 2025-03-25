@@ -1,4 +1,3 @@
-### bot.py
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
@@ -18,12 +17,12 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
-    # Регистрируем роутеры
+    # Регистрируем роутеры без .router
     dp.include_routers(
-        registration.router,
-        gpt.router,
-        search.router,
-        mute.router
+        registration,
+        gpt,
+        search,
+        mute
     )
 
     await create_tables()
