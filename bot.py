@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from handlers import gpt_search
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
@@ -19,11 +20,13 @@ async def main():
 
     # Регистрируем роутеры без .router
     dp.include_routers(
-        registration,
-        gpt,
-        search,
-        mute
-    )
+    registration,
+    gpt,
+    search,
+    mute,
+    gpt_search
+)
+
 
     await create_tables()
     await dp.start_polling(bot)
