@@ -24,3 +24,4 @@ async def handle_free_text(message: types.Message):
     )
 
     await message.reply(response.choices[0].message.content)
+gpt_search = router
