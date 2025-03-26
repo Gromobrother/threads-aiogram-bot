@@ -3,7 +3,6 @@ from openai import AsyncOpenAI
 import os
 
 router = Router()
-
 openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @router.message(F.text.startswith("/gpt"))
@@ -31,3 +30,6 @@ async def gpt_command(message: types.Message):
     except Exception as e:
         await message.reply("⚠️ Ошибка при обращении к GPT. Попробуй позже.")
         print("GPT error:", e)
+
+# 👇 ЭКСПОРТИРУЕМ router
+__all__ = ["router"]
