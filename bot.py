@@ -1,7 +1,9 @@
 import asyncio
 import logging
 from handlers import registration, gpt, search, mute
-from handlers.gpt_search import gpt_search  # ✅ правильно импортируем router
+from handlers.gpt_search import gpt_search
+from handlers.gpt_command import router as gpt_command
+from handlers.welcome_handler import router as welcome_handler
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from dotenv import load_dotenv
@@ -19,13 +21,15 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
-    # Регистрируем роутеры
+    # Регистрируем все роутеры
     dp.include_routers(
         registration,
         gpt,
         search,
         mute,
-        gpt_search  # ✅ добавлен наш GPT-поисковик
+        gpt_search,
+        gpt_command,
+        welcome_handler  # ✅ Обработчик новых участников
     )
 
     await create_tables()
