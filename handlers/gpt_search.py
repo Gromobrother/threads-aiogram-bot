@@ -18,3 +18,5 @@ async def handle_free_text(message: types.Message):
     )
 
     await message.reply(response.choices[0].message.content.strip())
+# Экспортируем router как gpt_search
+gpt_search = router
