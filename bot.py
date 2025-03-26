@@ -5,6 +5,7 @@ import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION
+from aiogram.types import BotCommand
 from dotenv import load_dotenv
 
 from handlers import registration, gpt, search, mute
@@ -15,15 +16,14 @@ from database.db import create_tables
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# Приветствие новых участников
 async def on_user_join(event: types.ChatMemberUpdated, bot: Bot):
     if event.new_chat_member.status == "member":
         await bot.send_message(
             chat_id=event.chat.id,
             text=(
-                f"👋 Привет, {event.new_chat_member.user.first_name}!\n"
+                f"👋 Добро пожаловать, {event.new_chat_member.user.first_name}!\n"
                 "Чтобы зарегистрироваться, используй команду:\n\n👉 /reg\n\n"
-                "Это поможет другим найти тебя по профессии 😉"
+                "Это поможет найти тебя по профессии 😉"
             )
         )
 
@@ -32,17 +32,25 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
-    # Слушаем вступление новых участников
+    # Добавляем команды в меню бота
+    await bot.set_my_commands([
+        BotCommand(command="reg", description="Зарегистрироваться в базе"),
+        BotCommand(command="find", description="Найти специалиста"),
+        BotCommand(command="gpt", description="Задать вопрос GPT"),
+        BotCommand(command="help", description="Помощь по боту"),
+    ])
+
+    # Привязка хендлера на вход новых участников
     dp.chat_member.register(on_user_join, ChatMemberUpdatedFilter(JOIN_TRANSITION))
 
-    # Подключаем все роутеры
+    # Регистрируем все модули (роутеры)
     dp.include_routers(
         registration,
         gpt,
         search,
         mute,
         gpt_search,
-        gpt_command  # ✅ это для /gpt
+        gpt_command,  # /gpt теперь работает!
     )
 
     await create_tables()
