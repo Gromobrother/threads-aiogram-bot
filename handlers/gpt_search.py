@@ -28,3 +28,4 @@ async def handle_mention(message: types.Message):
     )
 
     await message.reply(response.choices[0].message.content)
+gpt_search = router
