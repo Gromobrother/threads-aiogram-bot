@@ -1,12 +1,13 @@
-from aiogram import Router, Bot, types
-from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram import Router, types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatMemberUpdated
+from aiogram import Bot
 
 router = Router()
 
-@router.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))
-async def welcome_new_member(event: types.ChatMemberUpdated, bot: Bot):
-    chat_id = event.chat.id
+@router.chat_member()
+async def welcome_new_member(event: ChatMemberUpdated, bot: Bot):
+    if event.new_chat_member.status != "member":
+        return
 
     welcome_text = (
         "👋 Добро пожаловать в группу!\n\n"
@@ -15,8 +16,14 @@ async def welcome_new_member(event: types.ChatMemberUpdated, bot: Bot):
 
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🚀 Зарегистрироваться", switch_inline_query_current_chat="/reg ")]
+            [InlineKeyboardButton(text="📝 Зарегистрироваться", switch_inline_query_current_chat="/reg ")]
         ]
     )
 
-    await bot.send_message(chat_id=chat_id, text=welcome_text, reply_markup=keyboard)
+    await bot.send_message(
+        chat_id=event.chat.id,
+        text=welcome_text,
+        reply_markup=keyboard
+    )
+
+welcome_router = router
