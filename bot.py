@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from handlers import registration, gpt, search, mute
 from handlers.gpt_search import gpt_search
 from handlers.gpt_command import router as gpt_command
+from handlers.welcome_handler import welcome_router
 from database.db import create_tables
 
 load_dotenv()
@@ -32,25 +33,26 @@ async def main():
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
 
-    # Добавляем команды в меню бота
+    # Меню команд бота
     await bot.set_my_commands([
         BotCommand(command="reg", description="Зарегистрироваться в базе"),
         BotCommand(command="find", description="Найти специалиста"),
-        BotCommand(command="gpt", description="Задать вопрос GPT"),
+        BotCommand(command="gpt", description="Задать вопрос ИИ"),
         BotCommand(command="help", description="Помощь по боту"),
     ])
 
-    # Привязка хендлера на вход новых участников
+    # Приветствие при вступлении в чат
     dp.chat_member.register(on_user_join, ChatMemberUpdatedFilter(JOIN_TRANSITION))
 
-    # Регистрируем все модули (роутеры)
+    # Подключение роутеров
     dp.include_routers(
         registration,
         gpt,
         search,
         mute,
         gpt_search,
-        gpt_command,  # /gpt теперь работает!
+        gpt_command,
+        welcome_router  # ✅ кнопочное приветствие
     )
 
     await create_tables()
