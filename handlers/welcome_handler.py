@@ -1,11 +1,11 @@
-from aiogram import Router, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram import Router, Bot, types
 from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 router = Router()
 
 @router.chat_member(ChatMemberUpdatedFilter(JOIN_TRANSITION))
-async def welcome_new_member(event: types.ChatMemberUpdated, bot: types.Bot):
+async def welcome_new_member(event: types.ChatMemberUpdated, bot: Bot):
     chat_id = event.chat.id
 
     welcome_text = (
